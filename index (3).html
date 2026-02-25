@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mac Game Store – Agenda tu Cita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#ffffff;--off:#f7f6f4;--cream:#f1ede6;
+  --g100:#ebebeb;--g300:#c4c2bf;--g500:#888480;--g800:#2b2926;--black:#1a1917;
+  --gold:#c9a96e;--gold2:#a07840;
+  --r:4px;--sh:0 2px 24px rgba(0,0,0,.06);--shl:0 12px 56px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--g800);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;padding:0 6vw;height:68px}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--black)}
+.nav-logo span{color:var(--gold)}
+nav ul{list-style:none;display:flex;gap:2.5rem}
+nav ul a{text-decoration:none;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--g500);transition:color .2s}
+nav ul a:hover{color:var(--black)}
+.nav-cta{background:var(--black)!important;color:var(--white)!important;padding:.42rem 1.1rem;border-radius:100px}
+.nav-cta:hover{background:var(--gold2)!important}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:.4rem;background:var(--black);color:var(--white);text-decoration:none;padding:.85rem 1.8rem;font-size:.8rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border-radius:var(--r);transition:background .2s,transform .15s;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-outline{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--g300);color:var(--g800);text-decoration:none;padding:.85rem 1.8rem;font-size:.8rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border-radius:var(--r);background:transparent;transition:all .2s;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-outline:hover{border-color:var(--black);color:var(--black)}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--off);display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 6vw 4rem;gap:2rem;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-10vw;bottom:-10vh;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,.1) 0%,transparent 65%);pointer-events:none}
+.hero-eyebrow{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:1rem}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,4.8vw,5rem);font-weight:300;line-height:1.06;color:var(--black);margin-bottom:1.3rem}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:.95rem;color:var(--g500);line-height:1.75;max-width:420px;margin-bottom:2.2rem}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap}
+.trust-bar{display:flex;gap:2rem;margin-top:2.5rem;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:.45rem;font-size:.78rem;color:var(--g500)}
+
+/* HERO IPHONES */
+.hero-right{display:flex;align-items:center;justify-content:center;position:relative;min-height:480px}
+.phone-stage{position:relative;width:100%;max-width:480px;height:480px;margin:0 auto}
+.phone-img{position:absolute;border-radius:22px;object-fit:cover;object-position:center top;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.phone-main{width:48%;left:26%;top:0;height:72%;z-index:3;animation:flt 4s ease-in-out infinite}
+.phone-l{width:35%;left:2%;top:60px;height:55%;z-index:2;transform:rotate(-10deg);animation:fltL 4.5s ease-in-out infinite .4s}
+.phone-r{width:35%;right:2%;top:60px;height:55%;z-index:2;transform:rotate(10deg);animation:fltR 4s ease-in-out infinite 1s}
+.macbook-img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:85%;border-radius:12px;object-fit:cover;z-index:1;opacity:.7}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes fltL{0%,100%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(-10deg) translateY(-9px)}}
+@keyframes fltR{0%,100%{transform:rotate(10deg) translateY(0)}50%{transform:rotate(10deg) translateY(-9px)}}
+
+/* SECTIONS */
+section{padding:6rem 6vw}
+.lbl{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.7rem}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:300;line-height:1.15;color:var(--black);margin-bottom:1rem}
+.ssub{font-size:.93rem;color:var(--g500);line-height:1.72;max-width:520px;margin-bottom:3rem}
+
+/* MODELS GRID */
+#galeria{background:var(--white)}
+.models-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:4rem}
+.model-card{background:var(--off);border-radius:18px;padding:2rem 1rem 1.5rem;text-align:center;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:default}
+.model-card:hover{transform:translateY(-7px);box-shadow:0 20px 60px rgba(0,0,0,.12)}
+.model-card .badge-new{position:absolute;top:.9rem;right:.9rem;background:var(--black);color:var(--white);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .5rem;border-radius:100px}
+.model-card img{width:72%;max-width:130px;margin-bottom:1.1rem;filter:drop-shadow(0 8px 20px rgba(0,0,0,.13));transition:transform .35s}
+.model-card:hover img{transform:scale(1.06) translateY(-4px)}
+.model-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--black);margin-bottom:.25rem}
+.model-card p{font-size:.72rem;color:var(--g500)}
+
+/* LINEUP STRIP */
+.lineup-wrap{background:linear-gradient(135deg,#f7f6f4,#ede9e0);border-radius:20px;padding:2.5rem 2rem 0;overflow:hidden;text-align:center}
+.lineup-wrap h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--black);margin-bottom:2rem}
+.lineup-phones{display:flex;justify-content:center;align-items:flex-end;gap:1.2rem;flex-wrap:nowrap;overflow-x:auto;padding-bottom:.5rem}
+.lineup-phone{text-align:center;flex-shrink:0}
+.lineup-phone img{filter:drop-shadow(0 8px 18px rgba(0,0,0,.14));transition:transform .3s;display:block;margin:0 auto}
+.lineup-phone img:hover{transform:scale(1.06) translateY(-6px)}
+.lineup-phone p{font-size:.68rem;color:var(--g500);margin-top:.5rem}
+.lineup-phone.hero-phone p{color:var(--black);font-weight:600}
+
+/* DEVICES */
+#dispositivos{background:var(--off)}
+.device-tabs{display:flex;gap:.5rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.tab-btn{padding:.48rem 1.25rem;border:1.5px solid var(--g100);background:var(--white);border-radius:100px;font-size:.77rem;font-weight:500;cursor:pointer;transition:all .2s;color:var(--g500);font-family:'DM Sans',sans-serif}
+.tab-btn.active,.tab-btn:hover{background:var(--black);border-color:var(--black);color:var(--white)}
+.device-panel{display:none}
+.device-panel.active{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.8rem}
+.device-card{background:var(--white);border-radius:12px;padding:1.1rem 1rem 1rem;text-align:center;transition:box-shadow .3s,transform .2s;border:1.5px solid var(--g100);cursor:default;position:relative;overflow:hidden}
+.device-card::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(201,169,110,.05) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.device-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.1);transform:translateY(-4px);border-color:var(--gold)}
+.device-card:hover::before{opacity:1}
+.device-card h4{font-size:.82rem;font-weight:500;color:var(--black);line-height:1.3;margin-top:.5rem}
+.device-card p{font-size:.68rem;color:var(--g500);margin-top:.18rem}
+
+/* Phone SVG illustration */
+.phone-svg{width:52px;height:88px;margin:0 auto .2rem;display:block}
+.phone-body{rx:7;ry:7}
+.phone-screen{rx:4;ry:4}
+.phone-btn{rx:2;ry:2}
+/* Generation color themes */
+.gen-17 .phone-body{fill:#2b2926;stroke:#c9a96e;stroke-width:1.5}
+.gen-17 .phone-screen{fill:#1a1917}
+.gen-17 .phone-notch{fill:#c9a96e}
+.gen-16 .phone-body{fill:#3a3a3c;stroke:#636366;stroke-width:1.2}
+.gen-16 .phone-screen{fill:#1c1c1e}
+.gen-16 .phone-notch{fill:#48484a}
+.gen-15 .phone-body{fill:#1d1d1f;stroke:#6e6e73;stroke-width:1.2}
+.gen-15 .phone-screen{fill:#161617}
+.gen-15 .phone-notch{fill:#6e6e73}
+.gen-14 .phone-body{fill:#2c2c2e;stroke:#8e8e93;stroke-width:1.2}
+.gen-14 .phone-screen{fill:#1c1c1e}
+.gen-14 .phone-notch{fill:#8e8e93}
+.gen-13 .phone-body{fill:#3a3a3c;stroke:#aeaeb2;stroke-width:1.2}
+.gen-13 .phone-screen{fill:#1c1c1e}
+.gen-13 .phone-notch{fill:#aeaeb2}
+.gen-12 .phone-body{fill:#1d1d1f;stroke:#d1d1d6;stroke-width:1.2}
+.gen-12 .phone-screen{fill:#000}
+.gen-12 .phone-notch{fill:#d1d1d6}
+.gen-11 .phone-body{fill:#4a4a4c;stroke:#e5e5ea;stroke-width:1.2}
+.gen-11 .phone-screen{fill:#2c2c2e}
+.gen-11 .phone-notch{fill:#e5e5ea}
+/* MacBook SVG */
+.mac-svg{width:80px;height:52px;margin:0 auto .2rem;display:block}
+/* iPad SVG */
+.ipad-svg{width:62px;height:80px;margin:0 auto .2rem;display:block}
+
+/* SCHEDULE */
+#agendar{background:var(--white)}
+.sched-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:start}
+.hours-list{list-style:none;margin-top:1.5rem}
+.hours-list li{display:flex;justify-content:space-between;padding:.78rem 0;border-bottom:1px solid var(--g100);font-size:.86rem}
+.hours-list li:last-child{border-bottom:none}
+.hours-list .day{color:var(--g800);font-weight:500}
+.hours-list .time{color:var(--g500)}
+.form-wrap{background:var(--off);border-radius:16px;padding:2.5rem;box-shadow:var(--shl)}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;color:var(--black);margin-bottom:1.5rem}
+.fg{margin-bottom:1.05rem}
+.fg label{display:block;font-size:.7rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin-bottom:.38rem}
+.fg input,.fg select,.fg textarea{width:100%;padding:.7rem .95rem;border:1.5px solid var(--g100);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--g800);background:var(--white);transition:border-color .2s;outline:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg textarea{resize:vertical;min-height:72px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.sbtn{width:100%;padding:.92rem;background:var(--black);color:var(--white);border:none;border-radius:6px;font-size:.8rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;margin-top:.4rem}
+.sbtn:hover{background:var(--gold2)}
+.wa-note{display:flex;align-items:center;gap:.45rem;font-size:.71rem;color:var(--g500);margin-top:.65rem}
+
+/* LOCATION */
+#ubicacion{background:var(--cream)}
+.loc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.loc-item{display:flex;gap:.75rem;margin-bottom:1rem;font-size:.88rem;color:var(--g800);line-height:1.55}
+.loc-item .ico{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.map-wrap{border-radius:16px;overflow:hidden;box-shadow:var(--shl);height:360px}
+.map-wrap iframe{width:100%;height:100%;border:none}
+
+/* ADMIN */
+#admin{background:var(--off)}
+.admin-login-box{max-width:400px;margin:0 auto;background:var(--white);border-radius:16px;padding:2.5rem;text-align:center;box-shadow:var(--sh)}
+.admin-panel{display:none}
+.filter-bar{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;margin-bottom:1.4rem}
+.filter-bar select,.filter-bar input{padding:.48rem .85rem;border:1.5px solid var(--g100);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.8rem;background:var(--white);outline:none}
+.apt-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead tr{background:var(--black);color:var(--white)}
+thead th{padding:.75rem 1rem;text-align:left;font-weight:500;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase}
+tbody tr{border-bottom:1px solid var(--g100);transition:background .15s}
+tbody tr:hover{background:var(--white)}
+tbody td{padding:.8rem 1rem;color:var(--g800)}
+.bdg{display:inline-block;padding:.18rem .55rem;border-radius:100px;font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.bp{background:#fff4e0;color:#a07840}.bd{background:#e6f9ee;color:#2d7a52}.bm{background:#fdecea;color:#b5352c}
+.wabtn{display:inline-flex;align-items:center;gap:.28rem;background:#25d366;color:white;border:none;border-radius:4px;padding:.26rem .6rem;font-size:.68rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:background .2s}
+.wabtn:hover{background:#1da851}
+.mkbtn{background:transparent;border:1px solid var(--g300);border-radius:4px;padding:.26rem .6rem;font-size:.68rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:.3rem;transition:all .15s}
+.mkbtn:hover{background:var(--g100)}
+
+/* FOOTER */
+footer{background:var(--black);color:var(--g300);padding:3rem 6vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.77rem}
+.flogo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);font-weight:600}
+.flogo span{color:var(--gold)}
+.flinks{display:flex;gap:2rem}
+.flinks a{color:var(--g300);text-decoration:none;transition:color .2s}
+.flinks a:hover{color:var(--white)}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--white);border-radius:18px;padding:3rem 2.5rem;max-width:460px;width:90%;text-align:center;animation:popIn .3s ease}
+.modal .micon{font-size:3rem;margin-bottom:.75rem}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:400;margin-bottom:.65rem;color:var(--black)}
+.modal p{font-size:.86rem;color:var(--g500);line-height:1.6;margin-bottom:1.2rem}
+.mdetail{background:var(--off);border-radius:8px;padding:.95rem 1.1rem;text-align:left;font-size:.82rem;line-height:2;margin-bottom:1.3rem;color:var(--g800)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.ani{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.ani.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}
+.hero-l{animation:fadeUp .8s ease both}
+.hero-r{animation:fadeUp .9s ease both .15s}
+
+/* REVIEWS */
+#resenas{background:var(--white)}
+.stars{color:#f5a623;font-size:1.3rem;letter-spacing:.05em;margin-bottom:.5rem}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.review-card{background:var(--off);border-radius:16px;padding:1.8rem 1.6rem;position:relative;transition:transform .3s,box-shadow .3s}
+.review-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.1)}
+.review-card .stars{font-size:1rem;margin-bottom:.7rem}
+.review-card p{font-size:.88rem;color:var(--g500);line-height:1.7;font-style:italic;margin-bottom:1rem}
+.reviewer{display:flex;align-items:center;gap:.6rem}
+.reviewer-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--white);font-size:.85rem;flex-shrink:0}
+.reviewer-info strong{display:block;font-size:.82rem;color:var(--black)}
+.reviewer-info span{font-size:.72rem;color:var(--g300)}
+.rating-summary{background:linear-gradient(135deg,var(--black),#2b2926);border-radius:20px;padding:2.5rem;text-align:center;color:var(--white);margin-bottom:2.5rem}
+.rating-big{font-family:"Cormorant Garamond",serif;font-size:4.5rem;font-weight:300;line-height:1;color:var(--gold)}
+.rating-stars{font-size:1.5rem;color:#f5a623;margin:.3rem 0}
+.rating-count{font-size:.8rem;color:var(--g300)}
+
+/* SOCIAL */
+.social-bar{display:flex;justify-content:center;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+.social-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:100px;font-size:.8rem;font-weight:500;text-decoration:none;transition:transform .2s,opacity .2s;letter-spacing:.03em}
+.social-btn:hover{transform:translateY(-2px);opacity:.9}
+.social-btn.ig{background:linear-gradient(135deg,#833ab4,#fd1d1d,#f56040);color:#fff}
+.social-btn.wa{background:#25d366;color:#fff}
+.social-btn.tt{background:#000;color:#fff}
+
+@media(max-width:900px){
+  nav ul{display:none}
+  .hero,.sched-grid,.loc-grid{grid-template-columns:1fr;gap:2.5rem}
+  .hero{padding-top:6.5rem}
+  .models-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-right{min-height:300px}
+  .phone-stage{height:320px}
+  .frow{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Mac Game <span>Store</span></div>
+  <ul>
+    <li><a href="#dispositivos">Catálogo</a></li>
+    <li><a href="#agendar">Agendar</a></li>
+    <li><a href="#ubicacion">Ubicación</a></li>
+    <li><a href="#resenas">Reseñas</a></li><li><a href="#admin" class="nav-cta">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-l">
+    <p class="hero-eyebrow">Bogotá · CC Tecnolago · Local 118</p>
+    <h1>Tu próximo<br><em>iPhone</em> te<br>está esperando.</h1>
+    <p class="hero-sub">Del iPhone 11 al 17 Pro Max, MacBooks e iPads. Agenda tu cita y ven a recogerlo. Confirmación inmediata por WhatsApp.</p>
+    <div class="hero-btns">
+      <a href="#agendar" class="btn-primary">📅 Agendar cita</a>
+      <a href="#dispositivos" class="btn-outline">Ver modelos</a>
+    </div>
+    <div class="trust-bar">
+      <div class="trust-item"><span>⭐</span> 5.0 en Google</div>
+      <div class="trust-item"><span>🍎</span> +8 años de experiencia</div>
+      <div class="trust-item"><span>💬</span> Confirmación WhatsApp</div>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="phone-stage">
+      <img class="phone-img phone-l"
+        src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1723619400593"
+        alt="iPhone 16 Ultramarine">
+      <img class="phone-img phone-main"
+        src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-model-unselect-gallery-2-202409?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1725384180229"
+        alt="iPhone 16 Pro">
+      <img class="phone-img phone-r"
+        src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink?wid=5120&hei=2880&fmt=jpeg&qlt=90&.v=1723619400593"
+        alt="iPhone 16 Pink">
+    </div>
+  </div>
+</section>
+
+<!-- CATÁLOGO -->
+<section id="dispositivos">
+  <div class="ani">
+    <p class="lbl">Catálogo completo</p>
+    <h2 class="stitle">Todos los dispositivos</h2>
+    <p class="ssub">Explora nuestra disponibilidad completa de iPhones, MacBooks e iPads.</p>
+  </div>
+  <div class="device-tabs ani">
+    <button class="tab-btn active" onclick="showTab('iphone',this)">📱 iPhone</button>
+    <button class="tab-btn" onclick="showTab('macbook',this)">💻 MacBook</button>
+    <button class="tab-btn" onclick="showTab('ipad',this)">📟 iPad</button>
+  </div>
+  <div class="device-panel active" id="tab-iphone">
+    <!-- iPhone 17 Series — gold titanium -->
+    <div class="device-card gen-17"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#c9a96e"/></svg><h4>iPhone 17 Pro Max</h4><p>2025 · Nuevo ✦</p></div>
+    <div class="device-card gen-17"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#c9a96e"/></svg><h4>iPhone 17 Pro</h4><p>2025 · Nuevo ✦</p></div>
+    <div class="device-card gen-17"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#c9a96e"/></svg><h4>iPhone 17 Plus</h4><p>2025 · Nuevo ✦</p></div>
+    <div class="device-card gen-17"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#c9a96e"/></svg><h4>iPhone 17</h4><p>2025 · Nuevo ✦</p></div>
+    <!-- iPhone 16 Series — dark slate -->
+    <div class="device-card gen-16"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#636366"/></svg><h4>iPhone 16 Pro Max</h4><p>2024</p></div>
+    <div class="device-card gen-16"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#636366"/></svg><h4>iPhone 16 Pro</h4><p>2024</p></div>
+    <div class="device-card gen-16"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#636366"/></svg><h4>iPhone 16 Plus</h4><p>2024</p></div>
+    <div class="device-card gen-16"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><rect class="phone-btn" x="24" y="79" width="4" height="4" rx="1" ry="1" fill="#636366"/></svg><h4>iPhone 16</h4><p>2024</p></div>
+    <!-- iPhone 15 Series -->
+    <div class="device-card gen-15"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><circle cx="26" cy="80" r="3" fill="#6e6e73"/></svg><h4>iPhone 15 Pro Max</h4><p>2023</p></div>
+    <div class="device-card gen-15"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><circle cx="26" cy="80" r="3" fill="#6e6e73"/></svg><h4>iPhone 15 Pro</h4><p>2023</p></div>
+    <div class="device-card gen-15"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><circle cx="26" cy="80" r="3" fill="#6e6e73"/></svg><h4>iPhone 15 Plus</h4><p>2023</p></div>
+    <div class="device-card gen-15"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="17" y="12" width="18" height="5" rx="2.5" ry="2.5"/><circle cx="26" cy="80" r="3" fill="#6e6e73"/></svg><h4>iPhone 15</h4><p>2023</p></div>
+    <!-- iPhone 14 Series -->
+    <div class="device-card gen-14"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="14" y="11" width="24" height="7" rx="3.5" ry="3.5"/><circle cx="26" cy="80" r="3" fill="#8e8e93"/></svg><h4>iPhone 14 Pro Max</h4><p>2022</p></div>
+    <div class="device-card gen-14"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="14" y="11" width="24" height="7" rx="3.5" ry="3.5"/><circle cx="26" cy="80" r="3" fill="#8e8e93"/></svg><h4>iPhone 14 Pro</h4><p>2022</p></div>
+    <div class="device-card gen-14"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="14" y="11" width="24" height="7" rx="3.5" ry="3.5"/><circle cx="26" cy="80" r="3" fill="#8e8e93"/></svg><h4>iPhone 14 Plus</h4><p>2022</p></div>
+    <div class="device-card gen-14"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="11" ry="11"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="14" y="11" width="24" height="7" rx="3.5" ry="3.5"/><circle cx="26" cy="80" r="3" fill="#8e8e93"/></svg><h4>iPhone 14</h4><p>2022</p></div>
+    <!-- iPhone 13 Series -->
+    <div class="device-card gen-13"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="9" ry="9"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#aeaeb2"/></svg><h4>iPhone 13 Pro Max</h4><p>2021</p></div>
+    <div class="device-card gen-13"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="9" ry="9"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#aeaeb2"/></svg><h4>iPhone 13 Pro</h4><p>2021</p></div>
+    <div class="device-card gen-13"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="9" ry="9"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="5" ry="5"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#aeaeb2"/></svg><h4>iPhone 13</h4><p>2021</p></div>
+    <div class="device-card gen-13"><svg class="phone-svg" viewBox="0 0 44 76"><rect class="phone-body" x="1" y="1" width="42" height="74" rx="9" ry="9"/><rect class="phone-screen" x="4" y="9" width="34" height="57" rx="4" ry="4"/><rect class="phone-notch" x="14" y="10" width="16" height="5" rx="2.5" ry="2.5"/><circle cx="22" cy="69" r="2.5" fill="#aeaeb2"/></svg><h4>iPhone 13 Mini</h4><p>2021</p></div>
+    <!-- iPhone 12 Series -->
+    <div class="device-card gen-12"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="8" ry="8"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="4" ry="4"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#d1d1d6"/></svg><h4>iPhone 12 Pro Max</h4><p>2020</p></div>
+    <div class="device-card gen-12"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="8" ry="8"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="4" ry="4"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#d1d1d6"/></svg><h4>iPhone 12 Pro</h4><p>2020</p></div>
+    <div class="device-card gen-12"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="8" ry="8"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="4" ry="4"/><rect class="phone-notch" x="16" y="11" width="20" height="6" rx="3" ry="3"/><circle cx="26" cy="80" r="3" fill="#d1d1d6"/></svg><h4>iPhone 12</h4><p>2020</p></div>
+    <div class="device-card gen-12"><svg class="phone-svg" viewBox="0 0 44 76"><rect class="phone-body" x="1" y="1" width="42" height="74" rx="8" ry="8"/><rect class="phone-screen" x="4" y="9" width="34" height="57" rx="4" ry="4"/><rect class="phone-notch" x="14" y="10" width="16" height="5" rx="2.5" ry="2.5"/><circle cx="22" cy="69" r="2.5" fill="#d1d1d6"/></svg><h4>iPhone 12 Mini</h4><p>2020</p></div>
+    <!-- iPhone 11 Series -->
+    <div class="device-card gen-11"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="12" ry="12"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="6" ry="6"/><rect class="phone-notch" x="13" y="11" width="26" height="9" rx="4.5" ry="4.5"/><circle cx="26" cy="80" r="3.5" fill="#e5e5ea"/></svg><h4>iPhone 11 Pro Max</h4><p>2019</p></div>
+    <div class="device-card gen-11"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="12" ry="12"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="6" ry="6"/><rect class="phone-notch" x="13" y="11" width="26" height="9" rx="4.5" ry="4.5"/><circle cx="26" cy="80" r="3.5" fill="#e5e5ea"/></svg><h4>iPhone 11 Pro</h4><p>2019</p></div>
+    <div class="device-card gen-11"><svg class="phone-svg" viewBox="0 0 52 88"><rect class="phone-body" x="1" y="1" width="50" height="86" rx="12" ry="12"/><rect class="phone-screen" x="5" y="10" width="42" height="68" rx="6" ry="6"/><rect class="phone-notch" x="13" y="11" width="26" height="9" rx="4.5" ry="4.5"/><circle cx="26" cy="80" r="3.5" fill="#e5e5ea"/></svg><h4>iPhone 11</h4><p>2019</p></div>
+  </div>
+  <div class="device-panel" id="tab-macbook">
+    <!-- MacBook SVG: screen + base -->
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="2" width="68" height="42" rx="4" ry="4" fill="#2b2926" stroke="#c9a96e" stroke-width="1.2"/><rect x="9" y="5" width="62" height="36" rx="2" ry="2" fill="#1a1917"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".3"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#636366" opacity=".4"/><rect x="0" y="44" width="80" height="6" rx="3" ry="3" fill="#3a3a3c"/><rect x="27" y="45" width="26" height="4" rx="2" ry="2" fill="#2b2926"/></svg><h4>MacBook Air M1</h4><p>13" · 2020</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="2" width="68" height="42" rx="4" ry="4" fill="#2b2926" stroke="#8e8e93" stroke-width="1.2"/><rect x="9" y="5" width="62" height="36" rx="2" ry="2" fill="#1a1917"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#8e8e93" opacity=".3"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#636366" opacity=".4"/><rect x="0" y="44" width="80" height="6" rx="3" ry="3" fill="#3a3a3c"/><rect x="27" y="45" width="26" height="4" rx="2" ry="2" fill="#2b2926"/></svg><h4>MacBook Air M2</h4><p>13" · 2022</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="2" width="68" height="42" rx="4" ry="4" fill="#2b2926" stroke="#8e8e93" stroke-width="1.2"/><rect x="9" y="5" width="62" height="36" rx="2" ry="2" fill="#1a1917"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#8e8e93" opacity=".3"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#636366" opacity=".4"/><rect x="0" y="44" width="80" height="6" rx="3" ry="3" fill="#3a3a3c"/><rect x="27" y="45" width="26" height="4" rx="2" ry="2" fill="#2b2926"/></svg><h4>MacBook Air M2</h4><p>15" · 2023</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="2" width="68" height="42" rx="4" ry="4" fill="#2b2926" stroke="#c9a96e" stroke-width="1.5"/><rect x="9" y="5" width="62" height="36" rx="2" ry="2" fill="#1a1917"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".4"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#636366" opacity=".4"/><rect x="0" y="44" width="80" height="6" rx="3" ry="3" fill="#3a3a3c"/><rect x="27" y="45" width="26" height="4" rx="2" ry="2" fill="#2b2926"/></svg><h4>MacBook Air M3</h4><p>13" · 2024</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="2" width="68" height="42" rx="4" ry="4" fill="#2b2926" stroke="#c9a96e" stroke-width="1.5"/><rect x="9" y="5" width="62" height="36" rx="2" ry="2" fill="#1a1917"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".4"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#636366" opacity=".4"/><rect x="0" y="44" width="80" height="6" rx="3" ry="3" fill="#3a3a3c"/><rect x="27" y="45" width="26" height="4" rx="2" ry="2" fill="#2b2926"/></svg><h4>MacBook Air M3</h4><p>15" · 2024</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#636366" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M2</h4><p>13" · 2022</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#636366" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M3</h4><p>14" · 2023</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#636366" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M3 Pro</h4><p>14" · 2023</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#636366" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M3 Max</h4><p>16" · 2023</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#c9a96e" stroke-width="1.5"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M4</h4><p>14" · 2024</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#c9a96e" stroke-width="1.5"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M4 Pro</h4><p>14" · 2024</p></div>
+    <div class="device-card"><svg class="mac-svg" viewBox="0 0 80 52"><rect x="6" y="1" width="68" height="44" rx="3" ry="3" fill="#1a1917" stroke="#c9a96e" stroke-width="1.5"/><rect x="9" y="4" width="62" height="38" rx="2" ry="2" fill="#000"/><rect x="18" y="18" width="44" height="2" rx="1" fill="#c9a96e" opacity=".5"/><rect x="18" y="22" width="30" height="2" rx="1" fill="#48484a" opacity=".5"/><rect x="2" y="45" width="76" height="5" rx="2.5" ry="2.5" fill="#2c2c2e"/><rect x="28" y="46" width="24" height="3" rx="1.5" ry="1.5" fill="#1a1917"/></svg><h4>MacBook Pro M4 Max</h4><p>16" · 2024</p></div>
+  </div>
+  <div class="device-panel" id="tab-ipad">
+    <!-- iPad SVG: wider body -->
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="8" ry="8" fill="#3a3a3c" stroke="#8e8e93" stroke-width="1.2"/><rect x="5" y="6" width="52" height="64" rx="4" ry="4" fill="#1c1c1e"/><circle cx="31" cy="74" r="2.5" fill="#8e8e93"/><rect x="27" y="3" width="8" height="2" rx="1" fill="#48484a"/></svg><h4>iPad (10ª gen)</h4><p>10.9" · 2022</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 52 74"><rect x="1" y="1" width="50" height="72" rx="8" ry="8" fill="#3a3a3c" stroke="#8e8e93" stroke-width="1.2"/><rect x="4" y="6" width="44" height="58" rx="4" ry="4" fill="#1c1c1e"/><rect x="19" y="3" width="14" height="5" rx="2.5" ry="2.5" fill="#48484a"/><circle cx="26" cy="68" r="2.5" fill="#8e8e93"/></svg><h4>iPad Mini 6</h4><p>8.3" · 2021</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 52 74"><rect x="1" y="1" width="50" height="72" rx="8" ry="8" fill="#2b2926" stroke="#c9a96e" stroke-width="1.5"/><rect x="4" y="6" width="44" height="58" rx="4" ry="4" fill="#1a1917"/><rect x="19" y="3" width="14" height="5" rx="2.5" ry="2.5" fill="#c9a96e" opacity=".4"/><circle cx="26" cy="68" r="2.5" fill="#c9a96e"/></svg><h4>iPad Mini 7</h4><p>8.3" · 2024</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="8" ry="8" fill="#3a3a3c" stroke="#8e8e93" stroke-width="1.2"/><rect x="5" y="6" width="52" height="64" rx="4" ry="4" fill="#1c1c1e"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#48484a"/><circle cx="31" cy="74" r="2.5" fill="#8e8e93"/></svg><h4>iPad Air M1</h4><p>11" · 2022</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="8" ry="8" fill="#2b2926" stroke="#c9a96e" stroke-width="1.5"/><rect x="5" y="6" width="52" height="64" rx="4" ry="4" fill="#1a1917"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#c9a96e" opacity=".4"/><circle cx="31" cy="74" r="2.5" fill="#c9a96e"/></svg><h4>iPad Air M2</h4><p>11" · 2024</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="8" ry="8" fill="#2b2926" stroke="#c9a96e" stroke-width="1.5"/><rect x="5" y="6" width="52" height="64" rx="4" ry="4" fill="#1a1917"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#c9a96e" opacity=".4"/><circle cx="31" cy="74" r="2.5" fill="#c9a96e"/></svg><h4>iPad Air M2</h4><p>13" · 2024</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="6" ry="6" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="5" y="6" width="52" height="64" rx="3" ry="3" fill="#000"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#48484a"/><circle cx="31" cy="74" r="2.5" fill="#636366"/></svg><h4>iPad Pro M2</h4><p>11" · 2022</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="6" ry="6" fill="#1a1917" stroke="#636366" stroke-width="1.2"/><rect x="5" y="6" width="52" height="64" rx="3" ry="3" fill="#000"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#48484a"/><circle cx="31" cy="74" r="2.5" fill="#636366"/></svg><h4>iPad Pro M2</h4><p>12.9" · 2022</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="6" ry="6" fill="#1a1917" stroke="#c9a96e" stroke-width="1.5"/><rect x="5" y="6" width="52" height="64" rx="3" ry="3" fill="#000"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#c9a96e" opacity=".4"/><circle cx="31" cy="74" r="2.5" fill="#c9a96e"/></svg><h4>iPad Pro M4</h4><p>11" · 2024</p></div>
+    <div class="device-card"><svg class="ipad-svg" viewBox="0 0 62 80"><rect x="1" y="1" width="60" height="78" rx="6" ry="6" fill="#1a1917" stroke="#c9a96e" stroke-width="1.5"/><rect x="5" y="6" width="52" height="64" rx="3" ry="3" fill="#000"/><rect x="24" y="2" width="14" height="5" rx="2.5" ry="2.5" fill="#c9a96e" opacity=".4"/><circle cx="31" cy="74" r="2.5" fill="#c9a96e"/></svg><h4>iPad Pro M4</h4><p>13" · 2024</p></div>
+  </div>
+</section>
+
+<!-- AGENDAR -->
+<section id="agendar">
+  <div class="sched-grid">
+    <div class="ani">
+      <p class="lbl">Horarios</p>
+      <h2 class="stitle">Ven cuando<br>más te convenga</h2>
+      <p class="ssub">Agenda tu visita y te tenemos todo listo cuando llegues.</p>
+      <ul class="hours-list">
+        <li><span class="day">Lunes</span><span class="time">9:00 a.m. – 7:00 p.m.</span></li>
+        <li><span class="day">Martes – Viernes</span><span class="time">10:00 a.m. – 7:00 p.m.</span></li>
+        <li><span class="day">Sábado</span><span class="time">9:00 a.m. – 7:00 p.m.</span></li>
+        <li><span class="day">Domingo</span><span class="time">11:00 a.m. – 5:00 p.m.</span></li>
+      </ul>
+      <div style="margin-top:2rem;background:linear-gradient(135deg,var(--off),var(--cream));border-radius:14px;padding:1.5rem;text-align:center;overflow:hidden">
+        <img src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/macbook-air-midnight-config-20220606?wid=800&hei=500&fmt=jpeg&qlt=90"
+          alt="MacBook Air" style="width:100%;border-radius:8px;object-fit:cover;max-height:160px">
+        <p style="font-size:.76rem;color:var(--g500);margin-top:.6rem">También tenemos MacBooks e iPads 💻</p>
+      </div>
+    </div>
+
+    <div class="form-wrap ani d1">
+      <h3 class="form-title">Agenda tu cita 📅</h3>
+      <form id="apptForm" onsubmit="handleSubmit(event)">
+        <div class="frow">
+          <div class="fg"><label>Nombre completo</label><input type="text" id="fn" placeholder="María García" required></div>
+          <div class="fg"><label>WhatsApp</label><input type="tel" id="fp" placeholder="300 123 4567" required></div>
+        </div>
+        <div class="fg">
+          <label>Dispositivo de interés</label>
+          <select id="fd" required>
+            <option value="">Selecciona un dispositivo...</option>
+            <optgroup label="📱 iPhone">
+              <option>iPhone 17 Pro Max</option><option>iPhone 17 Pro</option>
+              <option>iPhone 17 Plus</option><option>iPhone 17</option>
+              <option>iPhone 16 Pro Max</option><option>iPhone 16 Pro</option>
+              <option>iPhone 16 Plus</option><option>iPhone 16</option>
+              <option>iPhone 15 Pro Max</option><option>iPhone 15 Pro</option>
+              <option>iPhone 15 Plus</option><option>iPhone 15</option>
+              <option>iPhone 14 Pro Max</option><option>iPhone 14 Pro</option>
+              <option>iPhone 14 Plus</option><option>iPhone 14</option>
+              <option>iPhone 13 Pro Max</option><option>iPhone 13 Pro</option>
+              <option>iPhone 13</option><option>iPhone 13 Mini</option>
+              <option>iPhone 12 Pro Max</option><option>iPhone 12 Pro</option>
+              <option>iPhone 12</option><option>iPhone 12 Mini</option>
+              <option>iPhone 11 Pro Max</option><option>iPhone 11 Pro</option><option>iPhone 11</option>
+            </optgroup>
+            <optgroup label="💻 MacBook">
+              <option>MacBook Air M3 (15")</option><option>MacBook Air M3 (13")</option>
+              <option>MacBook Air M2</option><option>MacBook Air M1</option>
+              <option>MacBook Pro M4 Max (16")</option><option>MacBook Pro M4 Pro (14")</option>
+              <option>MacBook Pro M4 (14")</option><option>MacBook Pro M3 Max</option>
+              <option>MacBook Pro M3 Pro</option><option>MacBook Pro M3</option>
+            </optgroup>
+            <optgroup label="📟 iPad">
+              <option>iPad Pro M4 (13")</option><option>iPad Pro M4 (11")</option>
+              <option>iPad Air M2 (13")</option><option>iPad Air M2 (11")</option>
+              <option>iPad Mini 7</option><option>iPad Mini 6</option><option>iPad (10ª gen)</option>
+            </optgroup>
+            <optgroup label="🔧 Otros">
+              <option>Apple Watch</option>
+              <option>AirPods</option>
+              <option>Apple TV</option>
+              <option>Otro</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="frow">
+          <div class="fg"><label>Fecha de visita</label><input type="date" id="fdt" required></div>
+          <div class="fg">
+            <label>Hora aproximada</label>
+            <select id="ft" required>
+              <option value="">Selecciona...</option>
+              <option>9:00 a.m.</option><option>10:00 a.m.</option><option>11:00 a.m.</option>
+              <option>12:00 p.m.</option><option>1:00 p.m.</option><option>2:00 p.m.</option>
+              <option>3:00 p.m.</option><option>4:00 p.m.</option><option>5:00 p.m.</option><option>6:00 p.m.</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Notas (color, capacidad, etc.)</label><textarea id="fnotes" placeholder="Ej: Negro 256GB, tengo para trade-in..."></textarea></div>
+        <button type="submit" class="sbtn">Confirmar cita → WhatsApp 💬</button>
+        <div class="wa-note"><span>💬</span> Recibirás confirmación por WhatsApp al instante</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section id="ubicacion">
+  <div class="loc-grid ani">
+    <div>
+      <p class="lbl">Encuéntranos</p>
+      <h2 class="stitle">Estamos en el<br>corazón de Tecnolago</h2>
+      <div class="loc-item"><span class="ico">📍</span><div><strong>CC Tecnolago, Local 118</strong><br>Ak 15 # 77-66, frente a Unilago<br>Bogotá, Colombia</div></div>
+      <div class="loc-item"><span class="ico">🕐</span><div><strong>Lun:</strong> 9–7 · <strong>Mar–Vie:</strong> 10–7<br><strong>Sáb:</strong> 9–7 · <strong>Dom:</strong> 11–5</div></div>
+      <div class="loc-item"><span class="ico">⭐</span><div>5.0 estrellas en Google Maps<br><em style="color:var(--g500);font-size:.83rem">"The best iPhone store in Tecnolago!"</em></div></div>
+      <div class="loc-item"><span class="ico">🚌</span><div>Cerca de TransMilenio Portal 80. Fácil acceso desde toda Bogotá.</div></div>
+      <a href="https://maps.google.com/?q=Macgamestore+Ak+15+77-66+Bogota" target="_blank" class="btn-primary" style="margin-top:1.4rem;text-decoration:none">🗺️ Cómo llegar</a>
+    </div>
+    <div class="map-wrap">
+      <!-- Coordenadas exactas de Macgamestore según Google Places: 4.664314, -74.0580731 -->
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.17!2d-74.06007!3d4.66431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9b001bd512011%3A0xad6556b1ae6b7296!2sMacgamestore!5e0!3m2!1ses!2sco!4v1708800000000"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin">
+  <p class="lbl">Administración</p>
+  <h2 class="stitle">Panel de citas</h2>
+  <p class="ssub">Gestiona citas, marca asistencias y contacta clientes por WhatsApp.</p>
+
+  <div class="admin-login-box" id="adminLogin">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">🔐</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;margin-bottom:1.2rem">Acceso administrador</h3>
+    <div class="fg" style="text-align:left"><label>Contraseña</label>
+      <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="doLogin()">Ingresar</button>
+  </div>
+
+  <div class="admin-panel" id="adminPanel">
+    <div class="filter-bar">
+      <input type="date" id="fDate" onchange="renderTbl()">
+      <select id="fStatus" onchange="renderTbl()">
+        <option value="">Todos los estados</option>
+        <option value="pending">Pendiente</option>
+        <option value="done">Asistió</option>
+        <option value="missed">No asistió</option>
+      </select>
+      <input type="text" id="fSearch" placeholder="Buscar nombre o dispositivo..." oninput="renderTbl()" style="min-width:200px">
+      <button class="btn-outline" onclick="doExport()">📥 Exportar CSV</button>
+      <button class="btn-outline" onclick="refreshApts()">🔄 Actualizar</button>
+    </div>
+    <div class="apt-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Nombre</th><th>WhatsApp</th><th>Dispositivo</th><th>Fecha</th><th>Hora</th><th>Notas</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody id="tBody"><tr><td colspan="9" style="text-align:center;color:var(--g300);padding:3rem;font-family:'Cormorant Garamond',serif;font-size:1.1rem">No hay citas aún ✦</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<section id="resenas">
+  <p class="lbl">Lo que dicen nuestros clientes</p>
+  <h2 class="stitle">Reseñas ★★★★★</h2>
+  <p class="ssub">La satisfacción de nuestros clientes es nuestra mejor carta de presentación.</p>
+
+  <div class="rating-summary">
+    <div class="rating-big">4.9</div>
+    <div class="rating-stars">★★★★★</div>
+    <div class="rating-count">Basado en nuestros clientes · Google Reviews</div>
+  </div>
+
+  <div class="reviews-grid ani">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"Excelente servicio, muy profesionales. Me repararon el iPhone en menos tiempo del esperado y quedó perfecto. Totalmente recomendados."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">JM</div>
+        <div class="reviewer-info"><strong>Juan Martínez</strong><span>hace 2 semanas</span></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"Compré mi MacBook aquí y la atención fue increíble. Me explicaron todo con detalle, los mejores precios del mercado y garantía real."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">SC</div>
+        <div class="reviewer-info"><strong>Sofía Castillo</strong><span>hace 1 mes</span></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"Agendé mi cita por la web, súper fácil. Llegué y me atendieron de inmediato. El técnico fue muy amable y resolvió mi problema al instante."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">AR</div>
+        <div class="reviewer-info"><strong>Andrés Rojas</strong><span>hace 3 semanas</span></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"Llevé mi iPad con la pantalla rota y quedó como nueva. Precio justo, trabajo de calidad y entrega rápida. Sin duda volvería."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">VL</div>
+        <div class="reviewer-info"><strong>Valentina López</strong><span>hace 2 meses</span></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"El mejor local de Apple en Bogotá. Saben lo que hacen, responden rápido por WhatsApp y el local está muy bien ubicado en Tecnolago."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">CM</div>
+        <div class="reviewer-info"><strong>Carlos Mendoza</strong><span>hace 1 semana</span></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p>"Muy buena experiencia desde el primer contacto. La cita fue puntual, el equipo quedó perfecto y el precio fue muy razonable. 100% recomendados."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">MP</div>
+        <div class="reviewer-info"><strong>María Pérez</strong><span>hace 5 días</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:2.5rem">
+    <p style="font-size:.85rem;color:var(--g500);margin-bottom:1.2rem">¿Ya fuiste? Déjanos tu reseña en Google 🙌🏼</p>
+    <a href="https://g.page/r/review" target="_blank" class="btn-outline">⭐ Dejar reseña en Google</a>
+  </div>
+
+  <div style="text-align:center;margin-top:3rem;padding-top:3rem;border-top:1px solid var(--g100)">
+    <p class="lbl">Síguenos</p>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--black);margin-bottom:.5rem">Estamos en redes sociales</h3>
+    <p style="font-size:.85rem;color:var(--g500);margin-bottom:1.5rem">Contenido Apple, tips, ofertas y más</p>
+    <div class="social-bar">
+      <a href="https://www.instagram.com/macgamestore/" target="_blank" class="social-btn ig">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="https://wa.me/573123118389" target="_blank" class="social-btn wa">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a href="https://www.tiktok.com/@macgamestore?lang=es" target="_blank" class="social-btn tt">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.27 8.27 0 004.84 1.55V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+        TikTok
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">Mac Game <span>Store</span></div>
+  <div>📍 CC Tecnolago, Local 118 · Ak 15 # 77-66 · Bogotá</div>
+  <div class="flinks">
+    <a href="#dispositivos">Catálogo</a>
+    <a href="#agendar">Agendar</a>
+    <a href="#ubicacion">Mapa</a>
+    <a href="https://www.instagram.com/macgamestore/" target="_blank">Instagram</a>
+    <a href="https://wa.me/573123118389" target="_blank">WhatsApp</a>
+    <a href="https://www.tiktok.com/@macgamestore?lang=es" target="_blank">TikTok</a>
+  </div>
+  <div>© 2025 Mac Game Store</div>
+</footer>
+
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="micon">🎉</div>
+    <h2>¡Cita agendada!</h2>
+    <p>Tu cita ha sido registrada. Abriendo WhatsApp para enviarte la confirmación...</p>
+    <div class="mdetail" id="mDetail"></div>
+    <button class="btn-primary" style="width:100%" onclick="closeModal()">¡Perfecto, gracias! 🙌🏼</button>
+  </div>
+</div>
+
+<script>
+let apts = [];
+const API_URL = 'https://script.google.com/macros/s/AKfycbwNFYc5UNQjH3uNWiRqXR43ThdrvU1Wkiv-5seS2O10NYcvxVuIYp0kCpLYD55aCZB48g/exec';
+
+async function loadApts(){
+  try{
+    const res=await fetch(API_URL);
+    if(res.ok){
+      const data=await res.json();
+      apts=data.map(a=>({...a,phone:String(a.phone||""),id:String(a.id||""),name:String(a.name||""),device:String(a.device||""),date:String(a.date||""),time:String(a.time||""),notes:String(a.notes||""),status:String(a.status||"pending")}));
+    }
+  }catch(e){console.error('Error cargando citas:',e)}
+}
+
+async function saveApt(apt){
+  try{
+    await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(apt)});
+  }catch(e){console.error('Error guardando cita:',e)}
+}
+
+async function updateApt(id,status){
+  try{
+    await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({_method:'PUT',id,status})});
+  }catch(e){console.error('Error actualizando cita:',e)}
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.device-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+document.getElementById('fdt').min=new Date().toISOString().split('T')[0];
+
+async function handleSubmit(e){
+  e.preventDefault();
+  const name=document.getElementById('fn').value.trim();
+  const phone=document.getElementById('fp').value.trim();
+  const device=document.getElementById('fd').value;
+  const date=document.getElementById('fdt').value;
+  const time=document.getElementById('ft').value;
+  const notes=document.getElementById('fnotes').value.trim();
+  const apt={id:Date.now(),name,phone,device,date,time,notes,status:'pending',created:new Date().toISOString()};
+  apts.push(apt);
+  await saveApt(apt);
+  // Tu número de WhatsApp (Mac Game Store)
+  const STORE_NUMBER = '573123118389';
+  // Mensaje para el cliente
+  const cp=phone.replace(/\D/g,'');
+  const fp2=cp.startsWith('57')?cp:'57'+cp;
+  const msgClient=encodeURIComponent(
+    `🍎 *¡Cita agendada! – Mac Game Store*\n\n`+
+    `Hola ${name} 👋🏼\n\nTu cita está confirmada:\n\n`+
+    `📱 *Dispositivo:* ${device}\n`+
+    `📅 *Fecha:* ${fmt(date)}\n`+
+    `🕐 *Hora:* ${time}\n`+
+    `📍 *Dónde:* CC Tecnolago, Local 118 · Ak 15 # 77-66 (Frente a Unilago)\n\n`+
+    (notes?`📝 *Nota:* ${notes}\n\n`:'')+
+    `¡Te esperamos con todo listo! 🙌🏼\n\n`+
+    `*Horario:* Lun 9–7 · Mar–Vie 10–7 · Sáb 9–7 · Dom 11–5`
+  );
+  // Mensaje de aviso para la tienda
+  const msgStore=encodeURIComponent(
+    `🔔 *Nueva cita agendada*\n\n`+
+    `👤 *Cliente:* ${name}\n`+
+    `📞 *WhatsApp:* ${phone}\n`+
+    `📱 *Dispositivo:* ${device}\n`+
+    `📅 *Fecha:* ${fmt(date)}\n`+
+    `🕐 *Hora:* ${time}\n`+
+    (notes?`📝 *Nota:* ${notes}\n`:'')+
+    `\n_Agendado desde la web_`
+  );
+  document.getElementById('mDetail').innerHTML=
+    `<strong>Nombre:</strong> ${name}<br>`+
+    `<strong>Dispositivo:</strong> ${device}<br>`+
+    `<strong>Fecha:</strong> ${fmt(date)} · ${time}<br>`+
+    `<strong>WhatsApp:</strong> ${phone}`;
+  document.getElementById('modal').classList.add('open');
+  // Abre primero WhatsApp de la tienda (notificación al dueño), luego al cliente
+  setTimeout(()=>window.open(`https://wa.me/${STORE_NUMBER}?text=${msgStore}`,'_blank'), 700);
+  setTimeout(()=>window.open(`https://wa.me/${fp2}?text=${msgClient}`,'_blank'), 1800);
+  e.target.reset();
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+function fmt(d){
+  const[y,m,day]=d.split('-');
+  const M=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${parseInt(day)} de ${M[parseInt(m)-1]} de ${y}`;
+}
+
+async function doLogin(){
+  if(document.getElementById('adminPass').value==='macgame2024'){
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    await loadApts();
+    renderTbl();
+  }else alert('Contraseña incorrecta');
+}
+
+function renderTbl(){
+  const df=document.getElementById('fDate').value;
+  const sf=document.getElementById('fStatus').value;
+  const q=document.getElementById('fSearch').value.toLowerCase();
+  let rows=apts.filter(a=>{
+    if(df&&a.date!==df)return false;
+    if(sf&&a.status!==sf)return false;
+    if(q&&!a.name.toLowerCase().includes(q)&&!a.device.toLowerCase().includes(q))return false;
+    return true;
+  }).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  const tb=document.getElementById('tBody');
+  if(!rows.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--g300);padding:2.5rem;font-family:\'Cormorant Garamond\',serif;font-size:1.1rem">Sin citas que coincidan ✦</td></tr>';return}
+  const bm={pending:'bp',done:'bd',missed:'bm'};
+  const lm={pending:'Pendiente',done:'Asistió',missed:'No asistió'};
+  tb.innerHTML=rows.map((a,i)=>{
+    const cl=a.phone.replace(/\D/g,'');
+    const fp=cl.startsWith('57')?cl:'57'+cl;
+    const rtk=encodeURIComponent(`🍎 *Mac Game Store*\n\nHola ${a.name}! 👋🏼\n\nNotamos que no pudiste pasar a buscar tu *${a.device}* el ${fmt(a.date)}.\n\n¿Quieres agendar una nueva cita? Con gusto te ayudamos 🙌🏼`);
+    return `<tr>
+      <td style="color:var(--g300)">${i+1}</td>
+      <td><strong>${a.name}</strong></td>
+      <td>${a.phone}</td>
+      <td>${a.device}</td>
+      <td>${fmt(a.date)}</td>
+      <td>${a.time}</td>
+      <td style="color:var(--g500);font-size:.76rem;max-width:110px">${a.notes||'—'}</td>
+      <td><span class="bdg ${bm[a.status]}">${lm[a.status]}</span></td>
+      <td style="white-space:nowrap">
+        <button class="wabtn" onclick="window.open('https://wa.me/${fp}?text=${rtk}','_blank')">💬 Retake</button>
+        ${a.status!=='done'?`<button class="mkbtn" onclick="mark(${a.id},'done')">✅</button>`:''}
+        ${a.status!=='missed'?`<button class="mkbtn" onclick="mark(${a.id},'missed')">❌</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function mark(id,s){
+  const a=apts.find(x=>x.id===id);
+  if(a){a.status=s;await updateApt(id,s);renderTbl()}
+}
+
+async function refreshApts(){await loadApts();renderTbl()}
+
+function doExport(){
+  const h=['Nombre','WhatsApp','Dispositivo','Fecha','Hora','Notas','Estado'];
+  const r=apts.map(a=>[a.name,a.phone,a.device,a.date,a.time,a.notes,a.status]);
+  const csv=[h,...r].map(row=>row.map(c=>`"${c}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const l=document.createElement('a');l.href=url;l.download='citas-macgamestore.csv';l.click();
+}
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:.1});
+document.querySelectorAll('.ani').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
