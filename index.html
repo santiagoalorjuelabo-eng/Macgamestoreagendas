@@ -503,7 +503,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwNFYc5UNQjH3uNWiRqXR43
 async function loadApts(){
   try{
     const res=await fetch(API_URL);
-    if(res.ok) apts=await res.json();
+    if(res.ok){
+      const data=await res.json();
+      apts=data.map(a=>({...a,phone:String(a.phone||""),id:String(a.id||""),name:String(a.name||""),device:String(a.device||""),date:String(a.date||""),time:String(a.time||""),notes:String(a.notes||""),status:String(a.status||"pending")}));
+    }
   }catch(e){console.error('Error cargando citas:',e)}
 }
 
