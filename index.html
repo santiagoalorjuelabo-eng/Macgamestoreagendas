@@ -129,8 +129,14 @@ section{padding:6rem 6vw}
 .mac-svg{width:80px;height:52px;margin:0 auto .2rem;display:block}
 /* iPad SVG */
 .ipad-svg{width:62px;height:80px;margin:0 auto .2rem;display:block}
-
-/* SCHEDULE */
+/* OCULTAR CATALOGO SIN ELIMINAR FUNCIONES */
+#dispositivos {
+  display: none !important;
+}
+a[href="#dispositivos"] {
+  display: none !important;
+}
+  /* SCHEDULE */
 #agendar{background:var(--white)}
 .sched-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:start}
 .hours-list{list-style:none;margin-top:1.5rem}
