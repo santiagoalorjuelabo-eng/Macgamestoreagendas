@@ -291,7 +291,21 @@ footer{background:var(--black);color:var(--g300);padding:3rem 6vw;display:flex;a
   .game-mobile-tabs{display:flex!important}
   .game-mobile-panel{display:none}
   .game-mobile-panel.mob-active{display:block}
+  /* Canvas más grande en móvil */
+  #minijuego{padding:3rem 3vw}
+  .game-canvas-wrap{border-radius:10px}
+  .game-scorebar{margin-bottom:.7rem}
 }
+/* Tutorial overlay dentro del canvas */
+.tut-overlay{position:absolute;inset:0;pointer-events:none;z-index:10;opacity:0;transition:opacity .4s}
+.tut-overlay.show{opacity:1}
+.tut-pulse{position:absolute;width:54px;height:54px;border-radius:50%;border:3px solid rgba(201,169,110,.9);animation:tutPulse 1.2s ease-in-out infinite}
+.tut-pulse::after{content:'';position:absolute;inset:8px;border-radius:50%;background:rgba(201,169,110,.35)}
+@keyframes tutPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.3);opacity:.4}}
+.tut-line{position:absolute;background:rgba(201,169,110,.6);height:2px;transform-origin:left center;animation:tutLineFade 1.2s ease-in-out infinite}
+@keyframes tutLineFade{0%,100%{opacity:.7}50%{opacity:.2}}
+.tut-label{position:absolute;background:rgba(0,0,0,.78);border:1px solid rgba(201,169,110,.5);border-radius:8px;color:#f1e4c8;font-family:"DM Sans",sans-serif;font-size:.75rem;font-weight:500;padding:.45rem .85rem;white-space:nowrap;pointer-events:none;animation:tutLabelBob 2s ease-in-out infinite}
+@keyframes tutLabelBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .game-canvas-wrap{position:relative;width:100%;cursor:crosshair;border-radius:14px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5)}
 .game-canvas-wrap canvas{display:block;width:100%;height:auto}
 .game-scorebar{display:flex;gap:0;border-radius:10px;overflow:hidden;margin-bottom:1rem;border:1px solid rgba(201,169,110,.25)}
@@ -609,6 +623,10 @@ footer{background:var(--black);color:var(--g300);padding:3rem 6vw;display:flex;a
         <div class="game-result-overlay" id="gameResult">
           <div class="res-main" id="resMain">⚽ ¡GOL!</div>
           <div class="res-score" id="resScore"></div>
+        </div>
+        <!-- Tutorial overlay -->
+        <div class="tut-overlay" id="tutOverlay">
+          <!-- elementos se inyectan por JS -->
         </div>
       </div>
       <div class="game-hint" id="gameHint">Apunta dentro de la portería y haz clic para tirar</div>
@@ -1434,6 +1452,7 @@ function gDrawAim(mx,my){
 // ── Shoot ──────────────────────────────────────
 function gShoot(tx,ty){
   if(gs.phase!=='aim') return;
+  clearTimeout(_tutTimer); _hideTut(); // ocultar tutorial al disparar
   gs.phase='shooting'; gs.tiros++; gUpdateScore();
   gs.targetX=tx; gs.targetY=ty; gAnimT=0;
   sfxKick();
@@ -1494,6 +1513,78 @@ function gResolve(){
 
 function gResetShot(){
   gs.ball={x:340,y:345}; gs.keeper={x:340,anim:0}; gs.phase='aim'; gDraw();
+  gTutReset(); // reiniciar timer del tutorial tras cada tiro
+}
+
+// ── Tutorial idle ───────────────────────────────
+var _tutTimer = null;
+var _tutShown = false;
+var _tutTDELAY = 4000; // ms sin click para mostrar tutorial
+
+function gTutReset(){
+  clearTimeout(_tutTimer);
+  _hideTut();
+  if(gs.tiros > 0) return; // solo mostrar en el primer tiro
+  _tutTimer = setTimeout(_showTut, _tutTDELAY);
+}
+
+function _hideTut(){
+  var ov = document.getElementById('tutOverlay');
+  if(ov) ov.classList.remove('show');
+}
+
+function _showTut(){
+  if(gs.phase !== 'aim') return;
+  var ov = document.getElementById('tutOverlay');
+  if(!ov) return;
+
+  // Calcular posición relativa al canvas (coordenadas canvas 680×400)
+  // Mostramos flecha desde la pelota hacia una esquina de la portería
+  var wrap = document.getElementById('gameWrap');
+  var cw = wrap.offsetWidth, ch = wrap.offsetHeight;
+  var scaleX = cw / W, scaleY = ch / H;
+
+  // Punto de origen: pelota (340,345)
+  var bx = 340 * scaleX, by = 345 * scaleY;
+  // Destino sugerido: zona top-left del arco
+  var tx = (GOAL_X + 55) * scaleX, ty = (GOAL_Y + 35) * scaleY;
+
+  // Limpiar overlay
+  ov.innerHTML = '';
+
+  // Línea desde pelota a destino
+  var dx = tx - bx, dy = ty - by;
+  var len = Math.sqrt(dx*dx + dy*dy);
+  var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+  var line = document.createElement('div');
+  line.className = 'tut-line';
+  line.style.cssText = 'left:'+bx+'px;top:'+by+'px;width:'+len+'px;transform:rotate('+ang+'deg)';
+  ov.appendChild(line);
+
+  // Pulso en el destino
+  var pulse = document.createElement('div');
+  pulse.className = 'tut-pulse';
+  pulse.style.cssText = 'left:'+(tx-27)+'px;top:'+(ty-27)+'px';
+  ov.appendChild(pulse);
+
+  // Label instrucción
+  var isMob = window.innerWidth <= 1000;
+  var lbl = document.createElement('div');
+  lbl.className = 'tut-label';
+  lbl.textContent = isMob ? '👆 Toca aquí para tirar' : '🖱 Clic aquí para tirar';
+  var lblX = Math.min(tx + 18, cw - 160);
+  var lblY = Math.max(ty - 38, 8);
+  lbl.style.cssText = 'left:'+lblX+'px;top:'+lblY+'px';
+  ov.appendChild(lbl);
+
+  // Segunda pista: cursor sobre el arco
+  var lbl2 = document.createElement('div');
+  lbl2.className = 'tut-label';
+  lbl2.style.cssText = 'left:50%;top:'+(by - 44)+'px;transform:translateX(-50%)';
+  lbl2.textContent = '⚽ Mueve el cursor sobre la portería';
+  if(!isMob) ov.appendChild(lbl2);
+
+  ov.classList.add('show');
 }
 
 // ── Exposed globally so onclick="" works ───────
@@ -1501,8 +1592,11 @@ window.gReset = function(){
   cancelAnimationFrame(gAnimFrame);
   document.getElementById('gameResult').classList.remove('show');
   gs.goles=0; gs.atajadas=0; gs.afuera=0; gs.tiros=0;
+  _savedGoals=0;
   gUpdateScore(); gResetShot();
   document.getElementById('gameHint').textContent='Apunta dentro de la portería y haz clic para tirar';
+  clearTimeout(_tutTimer);
+  _tutTimer = setTimeout(_showTut, _tutTDELAY);
 };
 
 // ── Leaderboard ────────────────────────────────
@@ -1694,6 +1788,10 @@ canvas.addEventListener('touchstart',function(e){
 gDraw();
 gLoadLB();
 setInterval(gLoadLB, 30000);
+// Arrancar tutorial tras delay inicial
+_tutTimer = setTimeout(_showTut, _tutTDELAY);
+// Ocultar tutorial al mover el mouse sobre el canvas
+canvas.addEventListener('mousemove', function(){ if(_tutShown) return; _hideTut(); clearTimeout(_tutTimer); _tutTimer = setTimeout(_showTut, _tutTDELAY + 2000); });
 
 </script>
 </body>
