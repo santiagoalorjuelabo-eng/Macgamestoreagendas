@@ -278,7 +278,20 @@ footer{background:var(--black);color:var(--g300);padding:3rem 6vw;display:flex;a
 #minijuego .stitle{color:var(--white)}
 #minijuego .ssub{color:var(--g300)}
 .game-layout{display:grid;grid-template-columns:1fr 380px;gap:3rem;align-items:start}
-@media(max-width:1000px){.game-layout{grid-template-columns:1fr}}
+@media(max-width:1000px){
+  .game-layout{grid-template-columns:1fr;gap:1.5rem}
+  .lb-panel{padding:1.1rem 1rem}
+  .lb-title{font-size:1.1rem}
+  .lb-name{font-size:.78rem}
+  .lb-goals{font-size:.78rem}
+  .gscore-label{font-size:.55rem}
+  .gscore-num{font-size:1.2rem}
+  .gscore-block{padding:.55rem .3rem}
+  #lbList{max-height:220px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .game-mobile-tabs{display:flex!important}
+  .game-mobile-panel{display:none}
+  .game-mobile-panel.mob-active{display:block}
+}
 .game-canvas-wrap{position:relative;width:100%;cursor:crosshair;border-radius:14px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5)}
 .game-canvas-wrap canvas{display:block;width:100%;height:auto}
 .game-scorebar{display:flex;gap:0;border-radius:10px;overflow:hidden;margin-bottom:1rem;border:1px solid rgba(201,169,110,.25)}
@@ -602,16 +615,50 @@ footer{background:var(--black);color:var(--g300);padding:3rem 6vw;display:flex;a
       <button class="game-reset-btn" onclick="gReset()">↺ Reiniciar</button>
     </div>
 
-    <!-- LEADERBOARD -->
+    <!-- LEADERBOARD + STATS PANEL -->
     <div class="lb-panel">
-      <div class="lb-title">🏆 Top Goleadores</div>
-      <div class="lb-sub">Tabla global — solo nombre y goles</div>
-      <div id="lbList"><div class="lb-loading">Cargando tabla...</div></div>
-      <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(201,169,110,.15)">
-        <div style="font-size:.72rem;color:var(--g500);text-align:center">Tu posición actual</div>
-        <div id="myRank" style="text-align:center;font-size:1rem;font-weight:500;color:var(--gold);margin-top:.3rem">—</div>
+      <!-- Tabs solo en movil -->
+      <div class="game-mobile-tabs" style="display:none;margin-bottom:1rem;gap:.5rem">
+        <button class="tab-btn active" id="mobTabLb" onclick="gMobTab('lb')">🏆 Ranking</button>
+        <button class="tab-btn" id="mobTabStats" onclick="gMobTab('stats')">📊 Mis stats</button>
       </div>
-      <button class="game-reset-btn" style="margin-top:1rem;font-size:.7rem" onclick="gSaveScore()">💾 Guardar mis goles</button>
+
+      <!-- Leaderboard -->
+      <div class="game-mobile-panel mob-active" id="mobPanelLb">
+        <div class="lb-title">🏆 Top Goleadores</div>
+        <div class="lb-sub">Tabla global — solo nombre y goles</div>
+        <div id="lbList"><div class="lb-loading">Cargando tabla...</div></div>
+        <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(201,169,110,.15)">
+          <div style="font-size:.72rem;color:var(--g500);text-align:center">Tu posición actual</div>
+          <div id="myRank" style="text-align:center;font-size:1rem;font-weight:500;color:var(--gold);margin-top:.3rem">—</div>
+        </div>
+      </div>
+
+      <!-- Stats panel (tab en movil, siempre visible en desktop) -->
+      <div class="game-mobile-panel" id="mobPanelStats" style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(201,169,110,.15)">
+        <div style="font-size:.7rem;color:var(--g500);text-align:center;margin-bottom:.7rem;letter-spacing:.1em;text-transform:uppercase">Tu sesión</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem">
+          <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:.8rem;text-align:center;border:1px solid rgba(201,169,110,.15)">
+            <div style="font-size:1.9rem;font-weight:500;color:var(--gold)" id="ms-goles">0</div>
+            <div style="font-size:.62rem;color:var(--g500);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem">Goles</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:.8rem;text-align:center;border:1px solid rgba(201,169,110,.15)">
+            <div style="font-size:1.9rem;font-weight:500;color:#e74c3c" id="ms-atajadas">0</div>
+            <div style="font-size:.62rem;color:var(--g500);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem">Atajadas</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:.8rem;text-align:center;border:1px solid rgba(201,169,110,.15)">
+            <div style="font-size:1.9rem;font-weight:500;color:var(--g300)" id="ms-afuera">0</div>
+            <div style="font-size:.62rem;color:var(--g500);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem">Afuera</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border-radius:8px;padding:.8rem;text-align:center;border:1px solid rgba(201,169,110,.15)">
+            <div style="font-size:1.9rem;font-weight:500;color:var(--white)" id="ms-tiros">0</div>
+            <div style="font-size:.62rem;color:var(--g500);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem">Tiros</div>
+          </div>
+        </div>
+        <div id="ms-precision" style="text-align:center;font-size:.78rem;color:var(--g500);margin-top:.8rem"></div>
+      </div>
+
+      <div id="autoSaveStatus" style="text-align:center;font-size:.72rem;color:var(--g500);margin-top:.9rem;min-height:1.1rem"></div>
     </div>
   </div>
 </section>
@@ -1231,6 +1278,20 @@ function gUpdateScore(){
   document.getElementById('g-atajadas').textContent=gs.atajadas;
   document.getElementById('g-afuera').textContent=gs.afuera;
   document.getElementById('g-tiros').textContent=gs.tiros;
+  // Sync mobile stats panel
+  var mg=document.getElementById('ms-goles');
+  var ma=document.getElementById('ms-atajadas');
+  var mf=document.getElementById('ms-afuera');
+  var mt=document.getElementById('ms-tiros');
+  var mp=document.getElementById('ms-precision');
+  if(mg) mg.textContent=gs.goles;
+  if(ma) ma.textContent=gs.atajadas;
+  if(mf) mf.textContent=gs.afuera;
+  if(mt) mt.textContent=gs.tiros;
+  if(mp && gs.tiros>0){
+    var pct=Math.round((gs.goles/gs.tiros)*100);
+    mp.textContent='Precisión: '+pct+'% ('+gs.goles+'/'+gs.tiros+' tiros)';
+  }
 }
 
 // ── Draw ───────────────────────────────────────
@@ -1414,10 +1475,12 @@ function gResolve(){
     main.textContent='🧤 ¡Atajada!'; main.style.color='#e74c3c';
     sub.textContent='¡Score reiniciado! Vuelve a empezar 💪';
     document.getElementById('gameHint').textContent='¡Atajada! El score se reinicia — inténtalo de nuevo';
+    gUpdateScore();
+    gAutoSaveOnSave();
     setTimeout(function(){
       gs.goles=0; gs.atajadas=0; gs.afuera=0; gs.tiros=0;
       gUpdateScore();
-    }, 1200);
+    }, 1400);
   } else {
     gs.afuera++; sfxOut();
     main.textContent='↗ ¡Afuera!'; main.style.color='#888';
@@ -1501,18 +1564,29 @@ function gRenderLB(){
   }
 }
 
-// ── Save / Register (all exposed globally) ─────
-window.gSaveScore = function(){
-  if(gs.goles===0){ alert('¡Primero necesitas meter al menos un gol! ⚽'); return; }
-  var me=_getPlayer();
-  if(me){
-    // Ya registrado — guardar directamente
-    _doSave(me.name, me.wa, me.email);
-  } else {
-    // Primera vez — mostrar modal de registro
+// ── Auto-Save System ───────────────────────────
+// Guarda goles automaticamente en cada atajada si goles > savedGoals
+var _savedGoals = 0;    // último valor guardado exitosamente
+var _isSaving = false;  // evitar guardados simultáneos
+
+function _setAutoSaveStatus(msg, color){
+  var el = document.getElementById('autoSaveStatus');
+  if(el){ el.textContent = msg; el.style.color = color || 'var(--g500)'; }
+}
+
+// Llamado automaticamente desde gResolve() en cada atajada
+function gAutoSaveOnSave(){
+  var me = _getPlayer();
+  if(!me){
+    // Primera atajada sin registro → mostrar modal
     document.getElementById('gameRegModal').classList.add('open');
+    return;
   }
-};
+  // Ya registrado → guardar silenciosamente si mejora el score
+  if(gs.goles > _savedGoals){
+    _doSave(me.name, me.wa, me.email);
+  }
+}
 
 window.gDoRegister = function(){
   var name  = document.getElementById('regName').value.trim();
@@ -1523,18 +1597,23 @@ window.gDoRegister = function(){
   if(!email||!email.includes('@')) { alert('Por favor ingresa un correo válido');    return; }
   _setPlayer({name:name, wa:wa, email:email});
   document.getElementById('gameRegModal').classList.remove('open');
-  _doSave(name, wa, email);
+  // Guardar inmediatamente si hay goles acumulados
+  if(gs.goles > _savedGoals){
+    _doSave(name, wa, email);
+  }
 };
 
 window.gSkipReg = function(){
   document.getElementById('gameRegModal').classList.remove('open');
 };
 
+// Guardar solo si goles > _savedGoals (evita regresiones)
 async function _doSave(name, wa, email){
-  var saveBtn = document.querySelector('#minijuego .lb-panel .game-reset-btn');
-  if(saveBtn){ saveBtn.textContent='Guardando…'; saveBtn.disabled=true; }
+  if(_isSaving) return;
+  if(gs.goles <= _savedGoals) return; // ya está guardado este score o uno mayor
+  _isSaving = true;
+  _setAutoSaveStatus('💾 Guardando…', 'var(--g300)');
 
-  // Usamos un form-data trick para evitar problemas de CORS con Apps Script
   var formData = new FormData();
   formData.append('data', JSON.stringify({
     action:'saveGoals',
@@ -1544,24 +1623,46 @@ async function _doSave(name, wa, email){
   }));
 
   try{
-    // Apps Script acepta fetch sin-cors en POST con FormData
     await fetch(GAME_API, {
       method: 'POST',
       mode:   'no-cors',
       body:   formData
     });
-    // no-cors no devuelve body legible, así que asumimos éxito
-    // y recargamos el leaderboard
+    _savedGoals = gs.goles;
+    _setAutoSaveStatus('✓ Guardado — ' + gs.goles + ' goles (' + name + ')', 'var(--gold)');
     setTimeout(async function(){
       await gLoadLB();
-      if(saveBtn){ saveBtn.textContent='💾 Guardar mis goles'; saveBtn.disabled=false; }
-      alert('¡Score guardado! ' + gs.goles + ' goles registrados a nombre de ' + name + ' 🏆');
     }, 1500);
   }catch(e){
-    if(saveBtn){ saveBtn.textContent='💾 Guardar mis goles'; saveBtn.disabled=false; }
-    alert('Error al guardar: '+e.message+'\nVerifica que el GAME_API esté configurado.');
+    _setAutoSaveStatus('⚠ Error al guardar', '#e74c3c');
   }
+  _isSaving = false;
 }
+
+// ── Mobile tab toggle ──────────────────────────
+window.gMobTab = function(tab){
+  var panelLb = document.getElementById('mobPanelLb');
+  var panelStats = document.getElementById('mobPanelStats');
+  var btnLb = document.getElementById('mobTabLb');
+  var btnStats = document.getElementById('mobTabStats');
+  if(tab === 'lb'){
+    panelLb.classList.add('mob-active');
+    panelStats.classList.remove('mob-active');
+    btnLb.classList.add('active');
+    btnStats.classList.remove('active');
+  } else {
+    panelStats.classList.add('mob-active');
+    panelLb.classList.remove('mob-active');
+    btnStats.classList.add('active');
+    btnLb.classList.remove('active');
+  }
+};
+
+// En desktop el panel stats siempre visible (sin tabs)
+(function(){
+  var panelStats = document.getElementById('mobPanelStats');
+  if(panelStats) panelStats.classList.add('mob-active');
+})();
 
 // ── Canvas input ───────────────────────────────
 function _gCoords(e){
